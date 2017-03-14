@@ -8,7 +8,9 @@ app.controller('AppCtrl', ['$scope', '$rootScope', '$http', function($scope, $ro
 	$scope.currentPage = 'login';
 
 	$scope.login = function() {
-		$http.post('https://gestao.srm.systems/idealmilhas/backend/application/index.php?rota=/login', 'email=' + $scope.loginData.email + '&password=' + $scope.loadData.password + '&hashId=5a9b0fde419b522a8b9baede73811369')
+		$http.post('https://gestao.srm.systems/idealmilhas/backend/application/index.php?rota=/login',
+			'email=' + $scope.loginData.email + '&password=' + $scope.loginData.password + '&hashId=5a9b0fde419b522a8b9baede73811369',
+			{ headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'} })
 			.then(function sucessCallback(data) {
 				var response = data.data;
 				if(response.message.type == 'S') {
@@ -39,6 +41,12 @@ app.controller('AppCtrl', ['$scope', '$rootScope', '$http', function($scope, $ro
 	};
 
 	var init = function() {
+
+		console.log(chrome.storage);
+		chrome.tabs.getSelected(null, function(tab) {
+			console.log(tab);
+		});
+
 		var login = window.localStorage.getItem('login');
 		if(login) {
 			// already logged
