@@ -16,6 +16,7 @@ app.controller('AppCtrl', ['$scope', '$rootScope', '$http', function($scope, $ro
 				if(response.message.type == 'S') {
 					$http.defaults.headers.common['hashId'] = response.dataset[0].hashId;
 					$scope.currentPage = 'data';
+					window.localStorage.setItem('login', JSON.stringify(response.dataset[0]));
 					$scope.loadData();
 				} else {
 					renderStatus(response.message.text);
@@ -31,7 +32,17 @@ app.controller('AppCtrl', ['$scope', '$rootScope', '$http', function($scope, $ro
 		$http.post('https://gestao.srm.systems/idealmilhas/backend/application/index.php?rota=/loadOrder', {})
 			.then(function sucessCallback(data) {
 				var response = data.data;
-				renderStatus('Vendas hoje: ' + response.dataset.length);
+				if(response.message) {
+					renderStatus(response.message.text);
+					$scope.currentPage = 'login';
+					console.log(response);
+				} else {
+					var totalMiles = 0;
+					for(var i in response.dataset) {
+						totalMiles += response.dataset[i].milesOriginal;
+					}
+					renderStatus('Vendas hoje: ' + response.dataset.length + ' - Milhas: ' + parseInt(totalMiles));
+				}
 				
 			}, function errorCallback(response){
 				renderStatus(response.message.text);
@@ -40,8 +51,14 @@ app.controller('AppCtrl', ['$scope', '$rootScope', '$http', function($scope, $ro
 			});
 	};
 
-	var init = function() {
+	$scope.logout = function() {
+		$scope.currentPage = 'login';
+		$scope.loginData = {};
+		renderStatus('');
+		window.localStorage.removeItem('login');
+	};
 
+	var init = function() {
 		console.log(chrome.storage);
 		chrome.tabs.getSelected(null, function(tab) {
 			console.log(tab);
@@ -55,7 +72,7 @@ app.controller('AppCtrl', ['$scope', '$rootScope', '$http', function($scope, $ro
 			$scope.currentPage = 'data';
 			$scope.loadData();
 		}
-	}
+	};
 
 	$http.defaults.headers.common['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 	return init();

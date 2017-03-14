@@ -20,17 +20,22 @@
 		<script src="angular.min.js"></script>
 		<script src="popup.js"></script>
 	</head>
-	<body style="width: 300px;" ng-app="app">
+	<body style="width: 400px;" ng-app="app">
 
 		<div ng-controller="AppCtrl">
 
 			<div ng-if="currentPage == 'login' ">
-				<input type="email" name="email" ng-model="loginData.email">
-				<input type="password" name="pass" ng-model="loginData.password">
+
+				<input type="email" name="email" placeholder="Email" ng-model="loginData.email">
+				<input type="password" name="pass" placeholder="Senha" ng-model="loginData.password">
 				<button ng-click="login()">Login</button>
+
 			</div>
 			<div ng-if="currentPage == 'data' ">
+
 				<p id="sales-count"></p>
+				<button ng-click="logout()">Log out</button>
+
 			</div>
 			<div id="status"></div>
 		</div>
