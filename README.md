@@ -1,1 +1,2 @@
+# DEPRECATED
 # chrome-extension-bot
